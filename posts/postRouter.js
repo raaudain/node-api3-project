@@ -4,7 +4,6 @@ const Posts = require("./postDb")
 const router = express.Router();
 
 
-
 router.get('/', (req, res) => {
   // do your magic!
   Posts
@@ -15,7 +14,7 @@ router.get('/', (req, res) => {
     })
     .catch(err => {
       console.log(err)
-      res.status(500).json()
+      res.status(500).json({error: "Server could not be reached."})
     })
 
 });
@@ -32,7 +31,7 @@ router.get('/:id', validatePostId, (req, res) => {
     })
     .catch(err => {
       console.log(err)
-      res.status(500).json()
+      res.status(500).json({error: "Server could not be reached."})
     })
 });
 
@@ -47,7 +46,7 @@ router.delete('/:id', validatePostId, (req, res) => {
     })
     .catch(err => {
       console.log(err)
-      res.status(500).json()
+      res.status(500).json({error: "Server could not be reached."})
     })
 });
 
@@ -66,7 +65,7 @@ router.put('/:id', validatePostId, (req, res) => {
         })
         .catch(err => {
           console.log(err)
-          res.status(500).json()
+          res.status(500).json({error: "Server could not be reached."})
         })
     })
     .catch(err => {
@@ -76,7 +75,6 @@ router.put('/:id', validatePostId, (req, res) => {
 });
 
 // custom middleware
-
 function validatePostId(req, res, next) {
   // do your magic!
   const id = req.params.id;

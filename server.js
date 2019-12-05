@@ -18,7 +18,6 @@ server.use("/api/posts", postRouter);
 server.use("/api/users", userRouter);
 
 //custom middleware
-
 function logger(req, res, next) {
   const timestamp = Date()
 
@@ -27,41 +26,5 @@ function logger(req, res, next) {
   next();
 }
 
-function validateUserId(req, res, next){
-  const userId = req.params.id
-
-  if(userId){
-    next()
-  }
-  else{
-    res.status(400).json({message: "invalid user id"}).send("Invalid user id");
-  }
-  
-}
-
-function validateUser(req, res, next){
-  const body = req.body;
-
-  if(!body){
-    res.status(400).json({message: "missing user data"}).send("missing user data");
-  }
-  else if(body && !body.name){
-    res.status(400).json({message: "missing required name field"});
-  }
-  else{
-    next();
-  }
-}
-
-function validatePost(req, res, next){
-  const body = req.body;
-
-  if(!body){
-    res.status(400).json({message: "missing post data"});
-  }
-  else if(body && !body.text){
-    res.status(400).json({message: "missing required text field"});
-  }
-}
 
 module.exports = server;

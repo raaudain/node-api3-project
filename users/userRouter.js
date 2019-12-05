@@ -14,16 +14,16 @@ router.post('/', validateUser, (req, res) => {
     })
     .catch(err => {
       console.log(err)
-      res.status(500).json()
+      res.status(500).json({error: "Server could not be reached."})
     })
 });
 
 router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
   // do your magic!
-  const id = req.params.id;
+  const id = req.user.id;
   const post = req.body;
   
-  console.log(post)
+  console.log(req)
   
   Users
     .getUserPosts(id)
@@ -36,13 +36,13 @@ router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
         })
         .catch(err => {
           console.log(err)
-          res.status(500).json()
+          res.status(500).json({error: "Server could not be reached."})
         })
 
     })
     .catch(err => {
       console.log(err)
-      res.status(500).json()
+      res.status(500).json({error: "Server could not be reached."})
     })
 });
 
@@ -52,20 +52,18 @@ router.get('/', (req, res) => {
   Users
     .get()
     .then(user => {
-      //console.log(user)
-      console.log(Users.getById())
       res.status(200).json(user)
     })
     .catch(err => {
       console.log(err)
-      res.status(500).json()
+      res.status(500).json({error: "Server could not be reached."})
     })
 });
 
 router.get('/:id', validateUserId, (req, res) => {
   // do your magic!
-  const id = req.params.id;
-
+  const id = req.user.id;
+  //console.log(req)
   Users
     .getById(id)
     .then(user => {
@@ -73,29 +71,28 @@ router.get('/:id', validateUserId, (req, res) => {
     })
     .catch(err => {
       console.log(err)
-      res.status(500).json()
+      res.status(500).json({error: "Server could not be reached."})
     })
 });
 
-router.get('/:id/posts', (req, res) => {
+router.get('/:id/posts', validateUserId, (req, res) => {
   // do your magic!
-  const id = req.params.id
+  const id = req.user.id;
 
   Users
     .getUserPosts(id)
     .then(user => {
-      //console.log(user)
       res.status(200).json(user)
     })
     .catch(err => {
       console.log(err)
-      res.status(500).json()
+      res.status(500).json({error: "Server could not be reached."})
     })
 });
 
 router.delete('/:id', validateUserId, (req, res) => {
   // do your magic!
-  const id = req.params.id;
+  const id = req.user.id;
 
   Users
     .remove(id)
@@ -104,13 +101,13 @@ router.delete('/:id', validateUserId, (req, res) => {
     })
     .catch(err => {
       console.log(err)
-      res.status(500).json()
+      res.status(500).json({error: "Server could not be reached."})
     })
 });
 
 router.put('/:id', validateUserId, (req, res) => {
   // do your magic!
-  const id = req.params.id;
+  const id = req.user.id;
   const user = req.body;
 
   Users
@@ -124,17 +121,18 @@ router.put('/:id', validateUserId, (req, res) => {
         })
         .catch(err => {
           console.log(err)
-          res.status(500).json()
+          res.status(500).json({error: "Server could not be reached."})
         })
     })
     .catch(err => {
       console.log(err)
-      res.status(500).json()
+      res.status(500).json({error: "Server could not be reached."})
     })
 });
 
-//custom middleware
 
+
+//custom middleware
 function validateUserId(req, res, next) {
  
   // do your magic!
@@ -144,20 +142,19 @@ function validateUserId(req, res, next) {
     .getById(id)
     .then(user => {
       if(!user){
-        //console.log(user.id)
         console.log("invalid user id")
         res.status(400).json({message: "invalid user id"})
       }
       else{
-        //console.log(user.name)
-        const usr = req.user
-        //console.log("req.user", usr);
+        // Creates key:value pair.  user: {id, name}
+        req.user = user;
+        //console.log("req.user", req.user, req);
         next();
       }
     })
     .catch(err => {
       console.log(err)
-      res.status(500).json()
+      res.status(500).json({error: "Server could not be reached."})
     })
 }
 
